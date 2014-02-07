@@ -31,18 +31,19 @@ class CorsServiceProvider implements ServiceProviderInterface
      * @param Application $app
      */
     public function boot(Application $app) {
-        $cors = new CorsService($this->options);
+        $options = $this->options;
+        $cors = new CorsService($options);
 
         // handle OPTIONS preflight request if necessary
-        $app->before(function (Request $request) use ($app, $cors) {
+        $app->before(function (Request $request) use ($app, $cors, $options) {
             if (!$cors->isCorsRequest($request)) {
                 return;
             }
 
             if ($cors->isPreflightRequest($request)) {
                 $response = $cors->handlePreflightRequest($request);
-                if (!empty($this->options['response_class'])) {
-                    $response = new $this->options['response_class'](
+                if (!empty($options['response_class'])) {
+                    $response = new $options['response_class'](
                         $response->getContent(),
                         $response->getStatusCode(),
                         $response->headers->all()
@@ -53,8 +54,8 @@ class CorsServiceProvider implements ServiceProviderInterface
             }
 
             if (!$cors->isActualRequestAllowed($request)) {
-                if (!empty($this->options['response_class'])) {
-                    $response = new $this->options['response_class'](
+                if (!empty($options['response_class'])) {
+                    $response = new $options['response_class'](
                         'Not allowed',
                         403
                     );
