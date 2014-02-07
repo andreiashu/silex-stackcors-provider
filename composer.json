@@ -1,0 +1,21 @@
+{
+    "name": "andreiashu/silex-stackcors-provider",
+    "description": "Silex Provider for Cross-origin resource sharing library based on asm89/stack-cors library",
+    "keywords": ["silex", "cors", "provider"],
+    "homepage": "https://github.com/andreiashu/silex-stackcors-provider",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrei",
+            "email": "andreiashu@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "silex/silex": "~1.1"
+    },
+    "autoload": {
+        "psr-0": { "Andreiashu": "src/" }
+    }
+}
