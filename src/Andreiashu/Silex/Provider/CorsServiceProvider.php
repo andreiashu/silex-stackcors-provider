@@ -18,11 +18,15 @@ class CorsServiceProvider implements ServiceProviderInterface
     /**
      * @param array $options
      * Additional options vs CorsStack
-     *   'response_class' eg:
+     *   'denied_reponse_class' eg:
      *     => '\Symfony\Component\HttpFoundation\JsonResponse'
      */
     public function __construct($options = array()) {
-        $this->options = $options;
+        $this->options = array_merge(array(
+            // if specified, this class will be returned in case
+            // a preflight or a normal requests are not allowed
+            'denied_reponse_class' => null,
+        ), $options);
     }
 
     public function register(Application $app) {}
@@ -42,8 +46,8 @@ class CorsServiceProvider implements ServiceProviderInterface
 
             if ($cors->isPreflightRequest($request)) {
                 $response = $cors->handlePreflightRequest($request);
-                if (!empty($options['response_class'])) {
-                    $response = new $options['response_class'](
+                if (!empty($options['denied_reponse_class'])) {
+                    $response = new $options['denied_reponse_class'](
                         $response->getContent(),
                         $response->getStatusCode(),
                         $response->headers->all()
@@ -54,8 +58,8 @@ class CorsServiceProvider implements ServiceProviderInterface
             }
 
             if (!$cors->isActualRequestAllowed($request)) {
-                if (!empty($options['response_class'])) {
-                    $response = new $options['response_class'](
+                if (!empty($options['denied_reponse_class'])) {
+                    $response = new $options['denied_reponse_class'](
                         'Not allowed',
                         403
                     );

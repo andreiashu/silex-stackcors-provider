@@ -26,7 +26,7 @@ class CorsServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function test_it_returns_json_response_for_request_with_origin_not_allowed() {
         $app = $this->createSilexApp(array(
-            'response_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
+            'denied_reponse_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
             'allowedOrigins' => array('notlocalhost'),
         ));
 
@@ -39,7 +39,7 @@ class CorsServiceProviderTest extends \PHPUnit_Framework_TestCase
     public function test_it_returns_403_json_response_for_preflight_request_with_origin_not_allowed()
     {
         $app = $this->createSilexApp(array(
-            'response_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
+            'denied_reponse_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
             'allowedOrigins' => array('notlocalhost'),
         ));
         $request = $this->createValidPreflightRequest();
