@@ -16,11 +16,6 @@ class CorsServiceProvider implements ServiceProviderInterface
     private $options;
 
     /**
-     * @var \Asm89\Stack\CorsService
-     */
-    private $cors;
-
-    /**
      * @param array $options
      * Additional options vs CorsStack
      *   'response_class' eg:
@@ -36,16 +31,16 @@ class CorsServiceProvider implements ServiceProviderInterface
      * @param Application $app
      */
     public function boot(Application $app) {
-        $this->cors = new CorsService($this->options);
+        $cors = new CorsService($this->options);
 
         // handle OPTIONS preflight request if necessary
-        $app->before(function (Request $request) use ($app) {
-            if (!$this->cors->isCorsRequest($request)) {
+        $app->before(function (Request $request) use ($app, $cors) {
+            if (!$cors->isCorsRequest($request)) {
                 return;
             }
 
-            if ($this->cors->isPreflightRequest($request)) {
-                $response = $this->cors->handlePreflightRequest($request);
+            if ($cors->isPreflightRequest($request)) {
+                $response = $cors->handlePreflightRequest($request);
                 if (!empty($this->options['response_class'])) {
                     $response = new $this->options['response_class'](
                         $response->getContent(),
@@ -57,7 +52,7 @@ class CorsServiceProvider implements ServiceProviderInterface
                 return $response;
             }
 
-            if (!$this->cors->isActualRequestAllowed($request)) {
+            if (!$cors->isActualRequestAllowed($request)) {
                 if (!empty($this->options['response_class'])) {
                     $response = new $this->options['response_class'](
                         'Not allowed',
@@ -73,11 +68,11 @@ class CorsServiceProvider implements ServiceProviderInterface
         }, Application::EARLY_EVENT);
 
         // when the response is sent back, add CORS headers if necessary
-        $app->after(function (Request $request, Response $response) {
-            if (!$this->cors->isCorsRequest($request)) {
+        $app->after(function (Request $request, Response $response) use ($cors) {
+            if (!$cors->isCorsRequest($request)) {
                 return;
             }
-            $this->cors->addActualRequestHeaders($response, $request);
+            $cors->addActualRequestHeaders($response, $request);
         });
     }
 }
