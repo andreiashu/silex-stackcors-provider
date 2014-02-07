@@ -22,11 +22,12 @@ class CorsServiceProvider implements ServiceProviderInterface
 
     /**
      * @param array $options
+     * Additional options vs CorsStack
+     *   'response_class' eg:
+     *     => '\Symfony\Component\HttpFoundation\JsonResponse'
      */
     public function __construct($options = array()) {
-        $this->options = array_merge(array(
-            'response_class' => '\Symfony\Component\HttpFoundation\Response',
-        ), $options);
+        $this->options = $options;
     }
 
     public function register(Application $app) {}
@@ -49,7 +50,7 @@ class CorsServiceProvider implements ServiceProviderInterface
                     $response = new $this->options['response_class'](
                         $response->getContent(),
                         $response->getStatusCode(),
-                        $response->headers
+                        $response->headers->all()
                     );
                 }
 
