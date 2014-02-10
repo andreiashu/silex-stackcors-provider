@@ -43,11 +43,11 @@ class CorsServiceProviderTest extends \PHPUnit_Framework_TestCase
         ));
         $request = $this->createValidPreflightRequest();
         $response = $app->handle($request);
-        $this->assertInstanceOf('\Andreiashu\Silex\Provider\CorsServiceDeniedResponse', $response);
+        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function test_it_returns_403_json_response_for_preflight_request_with_origin_not_allowed()
+    public function test_it_returns_403_custom_response_for_preflight_request_with_origin_not_allowed()
     {
         $app = $this->createSilexApp(array(
             'denied_reponse_class' => '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse',
@@ -56,6 +56,17 @@ class CorsServiceProviderTest extends \PHPUnit_Framework_TestCase
         $request = $this->createValidPreflightRequest();
         $response = $app->handle($request);
         $this->assertInstanceOf('\Andreiashu\Silex\Provider\CorsServiceDeniedResponse', $response);
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    public function test_it_returns_403_standard_response_for_preflight_request_with_origin_not_allowed()
+    {
+        $app = $this->createSilexApp(array(
+            'allowedOrigins' => array('notlocalhost'),
+        ));
+        $request = $this->createValidPreflightRequest();
+        $response = $app->handle($request);
+        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals(403, $response->getStatusCode());
     }
 

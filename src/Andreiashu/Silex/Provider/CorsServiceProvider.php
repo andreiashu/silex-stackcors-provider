@@ -47,7 +47,9 @@ class CorsServiceProvider implements ServiceProviderInterface
 
             if ($cors->isPreflightRequest($request)) {
                 $response = $cors->handlePreflightRequest($request);
-                if (!empty($options['denied_reponse_class'])) {
+                $denied_codes = array(Response::HTTP_METHOD_NOT_ALLOWED, Response::HTTP_FORBIDDEN);
+                $is_denied = in_array($response->getStatusCode(), $denied_codes);
+                if ($is_denied && !empty($options['denied_reponse_class'])) {
                     $response = new $options['denied_reponse_class'](
                         $response->getContent(),
                         $response->getStatusCode(),
