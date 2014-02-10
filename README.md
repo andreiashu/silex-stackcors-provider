@@ -18,14 +18,22 @@ For more options see the [Stack/Cors Library readme](https://github.com/asm89/st
 
 $app = new Silex\Application();
 $cors_options = array(
-  // allow all headers
-  'allowedHeaders' => array('*'),
-  // allow requests from localhost only. Use '*' to allow any origins
-  'allowedOrigins' => array('localhost'),
-  // optional: use a specific response class when the request is not allowed
-  // should be a subclass of \Symfony\Component\HttpFoundation\Response
-  // example
-  'denied_reponse_class' => '\Symfony\Component\HttpFoundation\JsonResponse'
+    // allow all headers
+    'allowedHeaders' => array('*'),
+    // allow requests from localhost only. Use '*' to allow any origins
+    'allowedOrigins' => array('localhost'),
+    // optional: use a specific response class when the request is not allowed
+    // should be a subclass of \Symfony\Component\HttpFoundation\Response
+    // example
+    'denied_reponse_class' => '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse'
 );
 $app->register(new Andreiashu\Silex\Provider\CorsServiceProvider($cors_options));
+
+// in a REST API you can add an ->after() hook to check if there are any CORS
+// errors and render your response according to your API error standards
+$app->after(function (Request $request, Response $response) use ($app) {
+    if (is_a($response, '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse')) {
+        // alter the response object as needed
+    }
+});
 ```

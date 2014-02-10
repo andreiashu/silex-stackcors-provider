@@ -26,36 +26,36 @@ class CorsServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function test_it_returns_json_response_for_request_with_origin_not_allowed() {
         $app = $this->createSilexApp(array(
-            'denied_reponse_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
+            'denied_reponse_class' => '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse',
             'allowedOrigins' => array('notlocalhost'),
         ));
 
         $request = $this->createValidActualRequest();
         $response = $app->handle($request);
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
+        $this->assertInstanceOf('\Andreiashu\Silex\Provider\CorsServiceDeniedResponse', $response);
         $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function test_it_returns_json_response_for_valid_preflight_request()
     {
         $app = $this->createSilexApp(array(
-            'denied_reponse_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
+            'denied_reponse_class' => '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse',
         ));
         $request = $this->createValidPreflightRequest();
         $response = $app->handle($request);
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
+        $this->assertInstanceOf('\Andreiashu\Silex\Provider\CorsServiceDeniedResponse', $response);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function test_it_returns_403_json_response_for_preflight_request_with_origin_not_allowed()
     {
         $app = $this->createSilexApp(array(
-            'denied_reponse_class' => '\Symfony\Component\HttpFoundation\JsonResponse',
+            'denied_reponse_class' => '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse',
             'allowedOrigins' => array('notlocalhost'),
         ));
         $request = $this->createValidPreflightRequest();
         $response = $app->handle($request);
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
+        $this->assertInstanceOf('\Andreiashu\Silex\Provider\CorsServiceDeniedResponse', $response);
         $this->assertEquals(403, $response->getStatusCode());
     }
 

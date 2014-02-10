@@ -20,6 +20,7 @@ class CorsServiceProvider implements ServiceProviderInterface
      * Additional options vs CorsStack
      *   'denied_reponse_class' eg:
      *     => '\Symfony\Component\HttpFoundation\JsonResponse'
+     *     => '\Andreiashu\Silex\Provider\CorsServiceDeniedResponse'
      */
     public function __construct($options = array()) {
         $this->options = array_merge(array(
